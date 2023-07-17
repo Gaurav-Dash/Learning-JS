@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script>
+        let r = {
+            from: 1, 
+            to: 10,
+            async *[Symbol.asyncIterator](){
+                for(let i = this.from; i <= this.to; i++){
+                    await new Promise((resolve, reject) => {
+                        setTimeout(resolve, 1000)
+                    }) 
+                    yield i
+                }
+            }
+        };
+
+        (async () => {
+            for await(let val of r)
+                console.log(val)
+        })();
+    </script>
+</body>
+
+</html>

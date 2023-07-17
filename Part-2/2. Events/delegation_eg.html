@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div id="something">
+        <button data-action="save">Save</button>
+        <button data-action="reset">Reset</button>
+        <button data-action="submit">Submit</button>
+    </div>
+    <script>
+        class Menu{
+            constructor(ele){
+                this._ele = ele
+                ele.onclick = this.onClick.bind(this)
+            }
+            save(){
+                console.log("Save button clicked")
+            }
+            reset(){
+                console.log("Reset button clicked")
+            }
+            submit(){
+                console.log("Submit button clicked")
+            }
+            onClick(e){
+                let actionType = e.target.dataset.action
+                console.log(actionType)
+                if(actionType){
+                    this[actionType]()
+                }
+            }
+        }
+
+        new Menu(something)
+    </script>    
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        .alert {
+            padding: 15px;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+            color: #3c763d;
+            background-color: #dff0d8;
+        }
+        .alertR {
+            padding: 15px;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+            color: rgb(156, 50, 50);
+            background-color: #dff0d8;
+        }
+    </style>
+    <script>
+        let div = document.createElement('div')
+        div.innerHTML = '<b>Hi there</b>'
+        div.className = 'alert'
+        document.body.append(div)
+
+        setTimeout(() => {
+            let clonedDiv = div.cloneNode(true)
+            clonedDiv.className = 'alertR'
+            clonedDiv.innerHTML = '<b>Bye bye</b>'
+            div.remove()
+            document.body.append(clonedDiv)
+        }, 2000)
+
+
+    </script>
+</body>
+
+</html>

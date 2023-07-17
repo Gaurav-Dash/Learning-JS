@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div id='somediv' some="thing" another="thing">
+    </div>
+</body>
+<script>
+    console.log(somediv.getAttribute('some'))
+    somediv.setAttribute('newAtt', 'All-set')
+    console.log(somediv.outerHTML)
+    for(let ar of somediv.attributes){
+        console.log(`${ar.name} - ${ar.value}`)
+    }
+</script>
+</html>

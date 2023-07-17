@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script>
+        let mixin = {
+            sayHi() {
+                console.log(`Hello ${this.name}`);
+            },
+            sayBye() {
+                console.log(`Bye ${this.name}`);
+            }
+        };
+
+        class User {
+            constructor(name) {
+                this.name = name;
+            }
+        }
+
+        Object.assign(User.prototype, mixin);
+        let usr = new User("GD")
+        usr.sayHi()
+        new User("Drake").sayHi(); 
+    </script>
+</body>
+
+</html>

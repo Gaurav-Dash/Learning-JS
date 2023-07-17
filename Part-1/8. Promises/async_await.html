@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script>
+        async function PromiseFlow() {
+            try {
+                let res_0 = await new Promise((resolve, reject) => {
+                    setTimeout(() => console.log("Initiating promise chain"), 1000)
+                    setTimeout(() => console.log("3"), 2000)
+                    setTimeout(() => console.log("2"), 3000)
+                    setTimeout(() => console.log("1"), 4000)
+                    setTimeout(() => resolve("initiated"), 6000)
+                })
+                console.log("status - " + res_0)
+                let res_1 = await new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error("Imposter")), 2000)
+                })
+
+            } catch (err) {
+                console.log("Caught - " + err)
+            }
+        }
+        PromiseFlow()
+    </script>
+</body>
+
+</html>
