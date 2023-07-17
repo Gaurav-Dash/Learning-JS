@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        let user = {
+            name : "GD",
+            greet(){
+                console.log(`Hi, ${this.name}!`)
+                console.log(this)
+            }
+        };
+        user.greet();
+
+        let user1 = {
+            name : "SD"
+        };
+
+        user1.greet = user.greet; // Unbound This
+
+        user1.greet();
+    </script>
+</body>
+</html>

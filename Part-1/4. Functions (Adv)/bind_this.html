@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script>
+        let user = {
+            firstName: "GD",
+            sayHi() {
+                alert(`Hello, ${this.firstName}!`);
+            }
+        };
+
+        let sayHi = user.sayHi.bind(user); 
+
+        sayHi(); // Hello, GD!
+
+        setTimeout(sayHi, 1000); // Hello, GD!
+
+        // even if the value of user changes within 1 second
+        // sayHi uses the pre-bound value which is reference to the old user object
+        user = {
+            sayHi() { alert("Another user in setTimeout!"); }
+        };
+    </script>
+</body>
+
+</html>

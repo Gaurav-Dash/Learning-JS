@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        const arr = ['a', 'b', 'c', 'd']
+        const newarr =  arr.splice(1, 3, 'e', 'f')
+        console.log(arr) // ["a", "e", "f"]
+        console.log(newarr) // ["b", "c", "d"]
+
+        const anotherarr = arr.slice(0, 2);
+        console.log(anotherarr)
+        newarr.concat(['i', 'j'], 'k', 'l').forEach(console.log)
+
+        console.log(newarr.find(item => item == 'b'))
+        console.log(newarr.filter(item => item > 'b'))
+        
+        let sumarr = [1, 2, 3, 4, 5];
+
+        let result = sumarr.reduce((sum, current) => sum + current, 0);
+
+        console.log(result); 
+
+    </script>    
+</body>
+</html>

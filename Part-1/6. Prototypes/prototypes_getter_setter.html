@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script>
+        let animal = {
+            eats: true
+        };
+
+        let rabbit = Object.create(animal);
+
+        alert(rabbit.eats); // true
+
+        alert(Object.getPrototypeOf(rabbit) === animal); // true
+
+        Object.setPrototypeOf(rabbit, {});
+
+
+        let dictionary = Object.create(null, {
+            toString: { // define toString property
+                value() { 
+                    return Object.keys(this).join();
+                }
+            }
+        });
+
+        dictionary.apple = "Apple";
+        dictionary.__proto__ = "test";
+
+
+        for (let key in dictionary) {
+            alert(key); 
+        }
+
+        
+        alert(dictionary); 
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        // Sum function using Closure. 
+
+        function sum(a){
+            return function(b){
+                return a+b
+            }
+        }
+
+        console.log(sum(2)(4))
+
+
+        // Returning multiple methods in object
+        const counter = (function () {
+            let privateCounter = 0;
+            function changeBy(val) {
+                privateCounter += val;
+            }
+
+            return {
+                increment() {
+                    changeBy(1);
+                },
+
+                decrement() {
+                    changeBy(-1);
+                },
+
+                value() {
+                    return privateCounter;
+                },
+            };
+        })();
+
+        console.log(counter.value()); // 0.
+
+        counter.increment();
+        counter.increment();
+        console.log(counter.value()); // 2.
+
+        counter.decrement();
+        console.log(counter.value()); // 1.
+
+    </script>    
+</body>
+</html>

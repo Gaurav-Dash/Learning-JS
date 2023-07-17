@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        let arr1 = [1, 2, 3, 4], arr2 = [9, 21, -23];
+        let maxVal = Math.max(...arr1, ...arr2) // Spread
+        console.log(maxVal)
+
+        let sum = (...args) => {
+            let num = 0;
+
+            for (let arg of args) num += arg;
+
+            return num;
+        }
+
+        console.log(sum(1, 2, 3))
+        console.log(sum(1, 2, 3, 8, 7, 12, 23))
+
+    </script>    
+</body>
+</html>

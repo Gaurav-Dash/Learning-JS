@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        let animal = {
+            eats: true,
+            moves(){
+                return this.name + " moves"
+            }
+        }
+        let rabbit = {
+            name: "Rabbit",
+            __proto__: animal
+        }
+
+        console.log(rabbit.moves())
+    </script>    
+</body>
+</html>

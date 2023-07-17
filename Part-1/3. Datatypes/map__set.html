@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        // Maps can use Objects as keys unlike Objects which
+        // can only use strings as keys
+        let usr = {}
+        let mp = new Map()
+        mp.set(usr, "230")
+        console.log(mp.get(usr))
+
+        let obj = {}
+
+        obj[usr] = "42"
+        obj[{}] = "21"
+        console.log(obj["[object Object]"]) // 21 ( !!!! )
+
+        obj = {
+            name: "XYZ",
+            age: 20
+        };
+        let newmp = new Map(Object.entries(obj))
+
+        console.log(newmp.get('name'))
+
+
+        // Obj <-> Map 
+        // Object.entries(obj) <-> Object.fromEntries(map.entries())
+
+
+        let set = new Set(["oranges", "apples", "bananas"]);
+
+        for (let value of set) alert(value);
+
+            // the same with forEach:
+        set.forEach((value, valueAgain, set) => {
+                alert(value);
+            })
+    </script>
+</body>
+</html>

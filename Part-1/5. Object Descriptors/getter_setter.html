@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        let usr = {
+            name: "GD",
+            age: "22",
+            get details(){
+                return `${this.name} , ${this.age}`
+            }
+        }
+
+        Object.defineProperty(usr, "allDetails", {
+            get(){
+                return this.name + this.age
+            },
+            set(val){
+                [this.name, this.age] = val.split(',')
+            }
+        })
+
+        Object.defineProperty(usr, "name", {
+            set(val){
+                if(val.length <= 1){
+                    console.log("too short name")
+                    return
+                }
+                this.name = val
+            }
+        })
+
+        console.log(usr.details)
+        console.log(usr.allDetails)
+        usr.name = "M"
+    </script>
+</body>
+</html>

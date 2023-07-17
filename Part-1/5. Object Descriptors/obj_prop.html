@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        let usr = {
+            name: "Gd", 
+            toString(){
+                return this.name
+            }
+        }    
+        let des = Object.getOwnPropertyDescriptor(usr, "name")
+        console.log(des)
+        
+        Object.defineProperty(usr, "toString", {
+            enumerable: false
+        })
+
+        for(let key in usr) console.log(key)
+    </script>
+</body>
+</html>

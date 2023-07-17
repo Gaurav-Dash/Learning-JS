@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        let id = Symbol("id")
+        let user = {
+            [id] : "Some ID" // [] -> required to make Symbols as keys 
+        }
+
+        console.log(user[id])
+    </script>
+</body>
+</html>
