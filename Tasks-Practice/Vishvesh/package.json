@@ -1,0 +1,17 @@
+{
+  "name": "vishvesh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "challenge1.ts",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "jest": "^29.6.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  }
+}

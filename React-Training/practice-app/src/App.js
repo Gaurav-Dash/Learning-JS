@@ -1,11 +1,13 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Counter from "./components/Counter";
-
+import Highlight from "./components/Highlight";
 function App() {
   return (
     <div className="App">
-      <Counter />
+      {/* <Highlight> */}
+      <h1>
+        <mark>hiSometext Hi wanted to hi. bdw hi again</mark>
+      </h1>
+      {/* </Highlight> */}
     </div>
   );
 }
