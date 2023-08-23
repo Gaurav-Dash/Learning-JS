@@ -1,0 +1,17 @@
+type RequestCacheObjectType = {
+  cachedResult: unknown;
+};
+
+type HttpClientArgType = {
+  useCache: boolean;
+  ttl?: number;
+  cacheStorageType: StorageType;
+};
+
+export enum StorageType {
+  LOCAL = "local",
+  SESSION = "session",
+  IN_MEMORY = "inmemory",
+}
+
+export { RequestCacheObjectType, HttpClientArgType };

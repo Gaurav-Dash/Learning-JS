@@ -28,15 +28,12 @@ const getSearchStringRanges = (text, searchString) => {
   return ranges;
 };
 
-const highlightStringInReactElement = (
-  element,
-  searchString,
-  stringCount,
-  ranges
-) => {
+const highlightStringInReactElement = (element, searchString) => {
+  let stringCount = 0;
+  let ranges = [];
+
   if (typeof element === "string") {
     let returnVal = [];
-    let prev = 0;
     while (
       ranges.length > 0 &&
       ranges[0].start < stringCount + element.length
@@ -46,7 +43,7 @@ const highlightStringInReactElement = (
       if (ranges[0].end > stringCount + element.length) {
         searchedString = (
           <>
-            {element.substring(prev, index)}
+            {element.substring(0, index)}
             <span style={{ backgroundColor: "yellow" }}>
               {element.substr(index)}
             </span>
@@ -54,75 +51,50 @@ const highlightStringInReactElement = (
         );
         ranges[0].start = stringCount + element.length;
       } else {
-        console.log("index", index);
-        const currRange = ranges[0];
         searchedString = (
-          <React.Fragment>
-            {element.substring(prev - stringCount, index)}
+          <>
+            {element.substring(0, index)}
             <span style={{ backgroundColor: "yellow" }}>
-              {element.substr(index, currRange.end - currRange.start + 1)}
+              {element.substr(index, ranges[0].end - ranges[0].start + 1)}
             </span>
-            {element.substring(
-              index + currRange.end - currRange.start + 1,
-              ranges[1]
-                ? ranges[1].start - stringCount
-                : stringCount + element.length
-            )}
-          </React.Fragment>
+            {element.substring(index + ranges[0].end - ranges[0].start + 1)}
+          </>
         );
-        console.log(searchedString);
         ranges.splice(0, 1);
-        prev = ranges[0] ? ranges[0].start : 0;
       }
       returnVal.push(searchedString);
     }
     stringCount += element.length;
-    return [
-      <>{returnVal.length > 0 ? returnVal.map((e) => e) : element}</>,
-      stringCount,
-      ranges,
-    ];
+    return <>{returnVal.length > 0 ? returnVal.map((e) => e) : element}</>;
   }
 
   if (React.isValidElement(element)) {
-    const children = React.Children.map(element.props.children, (child) => {
-      let returnVal = highlightStringInReactElement(
-        child,
-        searchString,
-        stringCount,
-        ranges
-      );
-      stringCount = returnVal[1];
-      ranges = returnVal[2];
-      return returnVal[0];
-    });
-    return [React.cloneElement(element, null, children), stringCount, ranges];
+    const children = React.Children.map(element.props.children, (child) =>
+      highlightStringInReactElement(child, searchString)
+    );
+
+    return React.cloneElement(element, null, children);
   }
 
-  return [element, stringCount, ranges];
+  return element;
 };
 
 // Example usage
 const NestedElementWithHighlight = ({ children, searchString }) => {
   const nestedElement = children;
-  const stringCount = 0;
-  console.log("hello");
-  if (searchString == "") return nestedElement;
+  if (searchString === "") return nestedElement;
   const textContent = reactElementToString(nestedElement, []);
-  const ranges = getSearchStringRanges(textContent, searchString);
-  console.log(...ranges);
-  return ranges.length == 0 ? (
+  ranges = getSearchStringRanges(textContent, searchString);
+  return ranges.length === 0 ? (
     nestedElement
   ) : (
     <div>
-      {
-        highlightStringInReactElement(
-          nestedElement,
-          searchString,
-          stringCount,
-          ranges
-        )[0]
-      }
+      {highlightStringInReactElement(
+        nestedElement,
+        searchString,
+        searchCount,
+        ranges
+      )}
     </div>
   );
 };
