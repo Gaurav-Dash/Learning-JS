@@ -1,40 +1,52 @@
 // 1. implement Http Client with request cancellation and caching
-import {
-  RequestCacheObjectType,
-  HttpClientArgType,
-  StorageType,
-} from "./HttpClientTypes";
+import { HttpClientArgType, StorageType } from "./HttpClientTypes";
+import { InMemoryStorage, LocalStorage, SessionStorage } from "./Storage";
+
+const MILLISECONDS_PER_DAY = 60 * 60 * 24 * 1000; // 86400000
 
 export class HttpClient {
   private useCache?: boolean;
   private ttl?: number;
-  private inMemoryCache?: { [url: string]: RequestCacheObjectType };
-  private cacheStorageType?: StorageType;
-  private abortControllers: { [url: string]: AbortController };
+  private cacheStorage?: LocalStorage | SessionStorage | InMemoryStorage;
+  private abortControllers: Record<string, AbortController>;
 
+  // Check if request exits before new request is made.
   constructor({ useCache, ttl, cacheStorageType }: HttpClientArgType) {
     this.useCache = useCache || false;
-    this.ttl = ttl; // check whether default is needed or not
+    this.ttl = ttl || MILLISECONDS_PER_DAY;
     this.abortControllers = {};
-    this.cacheStorageType = cacheStorageType; // storage
-    if (cacheStorageType === StorageType.IN_MEMORY) this.inMemoryCache = {};
-    this.deleteCacheFromStorage.bind(this);
+    if (cacheStorageType === StorageType.IN_MEMORY)
+      this.cacheStorage = new InMemoryStorage();
+    if (cacheStorageType === StorageType.LOCAL)
+      this.cacheStorage = new LocalStorage();
+    if (cacheStorageType === StorageType.SESSION)
+      this.cacheStorage = new SessionStorage();
   }
 
   async get(url: string, options?: object) {
-    if (this.useCache && this.checkRequestExistsInCache(url)) {
-      console.log("Cache memory triggered for ", url);
-      return this.getCachedResult(url);
+    if (this.useCache && this.cacheStorage.exists(url)) {
+      console.log("cache memory triggered");
+      if (this.checkIfCacheValid(url)) {
+        console.log("cache found in memory");
+        return this.cacheStorage.get(url);
+      } else {
+        console.log("ttl expired");
+        this.cacheStorage.delete(url);
+      }
+    }
+
+    // this.cancel(url)
+    // shall I use this ?
+
+    if (this.checkIfRequestExists(url)) {
+      this.abortControllers[url].abort();
+      delete this.abortControllers[url];
     }
 
     const controller = new AbortController();
     this.abortControllers[url] = controller;
 
     try {
-      setTimeout(() => {
-        console.log("deleting cache memory");
-        this.deleteCacheFromStorage(url);
-      }, this.ttl);
       const result = await fetch(url, {
         ...options,
         signal: controller.signal,
@@ -44,15 +56,17 @@ export class HttpClient {
       });
       const res = await result.json();
       if (this.useCache) {
-        this.insertCacheIntoStorage(url, {
-          cachedResult: await res,
+        this.cacheStorage.insert(url, {
+          cachedResult: res,
+          insertedAt: new Date().getTime(),
         });
       }
       delete this.abortControllers[url];
-      // clearTimeout(timeoutFnId);
       return res;
     } catch (error) {
-      throw new Error(error as string);
+      throw new Error(
+        `error occured while fetching request : ${error.toString()}`
+      );
     }
   }
 
@@ -61,60 +75,21 @@ export class HttpClient {
       throw new Error("Request does not exist");
 
     this.abortControllers[url].abort();
+    delete this.abortControllers[url];
     console.log("request aborted by user");
     return { message: "Request aborted successfully" };
-  }
-
-  private checkRequestExistsInCache(url: string): boolean {
-    if (this.cacheStorageType === StorageType.IN_MEMORY) {
-      return url in this.inMemoryCache!;
-    }
-
-    if (this.cacheStorageType === StorageType.LOCAL) {
-      const cacheDataString = localStorage.getItem(url);
-      return cacheDataString !== null ? true : false;
-    }
-
-    if (this.cacheStorageType === StorageType.SESSION) {
-      const cacheDataString = sessionStorage.getItem(url);
-      return cacheDataString !== null ? true : false;
-    }
-
-    return false;
   }
 
   private checkIfRequestExists(url: string) {
     return url in this.abortControllers;
   }
 
-  private getCachedResult(url: string) {
-    if (this.cacheStorageType === StorageType.IN_MEMORY)
-      return this.inMemoryCache![url].cachedResult;
-    if (this.cacheStorageType === StorageType.LOCAL)
-      return JSON.parse(localStorage.getItem(url)).cachedResult;
-    if (this.cacheStorageType === StorageType.SESSION)
-      return JSON.parse(sessionStorage.getItem(url)).cachedResult;
-  }
-
-  private insertCacheIntoStorage(
-    url: string,
-    requestData: RequestCacheObjectType
-  ): void {
-    if (this.cacheStorageType === StorageType.IN_MEMORY)
-      this.inMemoryCache![url] = requestData;
-    if (this.cacheStorageType === StorageType.LOCAL)
-      localStorage.setItem(url, JSON.stringify(requestData));
-    if (this.cacheStorageType === StorageType.SESSION)
-      sessionStorage.setItem(url, JSON.stringify(requestData));
-  }
-
-  private deleteCacheFromStorage(url: string) {
-    if (this.cacheStorageType === StorageType.IN_MEMORY)
-      delete this.inMemoryCache![url];
-    if (this.cacheStorageType === StorageType.LOCAL)
-      localStorage.removeItem(url);
-    if (this.cacheStorageType === StorageType.SESSION)
-      sessionStorage.removeItem(url);
+  private checkIfCacheValid(url) {
+    const currDate = new Date();
+    const insertedAt = this.cacheStorage.get(url).insertedAt;
+    // inser;
+    // console.log("here", insertedAt.getTime(), currDate.getTime());
+    return currDate.getTime() - insertedAt < this.ttl;
   }
 }
 
@@ -150,4 +125,29 @@ export class HttpClient {
 //   .then((res) => {
 //     console.log("second then");
 //     console.log(res);
+//   });
+
+// testing if deleteCache is getting triggered
+
+// const httpClient = new HttpClient({
+//   useCache: true,
+//   cacheStorageType: StorageType.IN_MEMORY,
+//   ttl: 2000,
+// });
+
+// httpClient
+//   .get("https://dummyjson.com/products/1")
+//   .then(() => {
+//     // console.log(res);
+//     return new Promise((resolve) => {
+//       setTimeout(
+//         async () =>
+//           resolve(await httpClient.get("https://dummyjson.com/products/1")),
+//         1000
+//       );
+//     });
+//   })
+//   .then(() => {
+//     console.log("second then");
+//     // console.log(res);
 //   });

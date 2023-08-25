@@ -1,11 +1,12 @@
-type RequestCacheObjectType = {
+export type RequestCacheObjectType = {
   cachedResult: unknown;
+  insertedAt: number;
 };
 
-type HttpClientArgType = {
+export type HttpClientArgType = {
   useCache: boolean;
   ttl?: number;
-  cacheStorageType: StorageType;
+  cacheStorageType?: StorageType;
 };
 
 export enum StorageType {
@@ -13,5 +14,3 @@ export enum StorageType {
   SESSION = "session",
   IN_MEMORY = "inmemory",
 }
-
-export { RequestCacheObjectType, HttpClientArgType };
